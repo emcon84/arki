@@ -54,9 +54,14 @@ export function StartSessionButton() {
     setLoading(true)
     try {
       const res = await fetch(API_ROUTES.sessions, { method: 'POST' })
-      const data = (await res.json()) as CreateSessionResponse
-      saveSessionToStorage(data.session.id)
-      router.push(`/session/${data.session.id}`)
+      const data = await res.json() as Record<string, unknown>
+      if (!res.ok || !data.session) {
+        console.error('[Arki] /api/sessions error:', data)
+        return
+      }
+      const session = data.session as { id: string }
+      saveSessionToStorage(session.id)
+      router.push(`/session/${session.id}`)
     } finally {
       setLoading(false)
     }
