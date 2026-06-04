@@ -5,6 +5,7 @@ export const API_ROUTES = {
   sessionSpecs: (id: string) => `/api/sessions/${id}/specs`,
   submitFeedback: (id: string) => `/api/sessions/${id}/feedback`,
   adminStats: '/api/admin/stats',
+  adminSession: (id: string) => `/api/admin/sessions/${id}`,
 } as const
 
 export const CLAUDE_MODELS = {

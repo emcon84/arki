@@ -4,9 +4,17 @@ import { sessions, messages, blueprints, specs, feedbacks } from '@/db/schema'
 import { count, eq, avg, gte, sql } from 'drizzle-orm'
 import type { AdminStats } from '@/types'
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
+function extractAdminKey(request: NextRequest): string | null {
+  const authHeader = request.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.slice(7)
+  }
   const { searchParams } = new URL(request.url)
-  const key = searchParams.get('key')
+  return searchParams.get('key')
+}
+
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const key = extractAdminKey(request)
 
   if (!key || key !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

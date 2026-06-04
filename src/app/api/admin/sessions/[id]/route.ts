@@ -3,12 +3,20 @@ import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { sessions, messages, blueprints, specs, feedbacks } from '@/db/schema'
 
+function extractAdminKey(request: NextRequest): string | null {
+  const authHeader = request.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.slice(7)
+  }
+  const { searchParams } = new URL(request.url)
+  return searchParams.get('key')
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
-  const { searchParams } = new URL(request.url)
-  const key = searchParams.get('key')
+  const key = extractAdminKey(request)
 
   if (!key || key !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

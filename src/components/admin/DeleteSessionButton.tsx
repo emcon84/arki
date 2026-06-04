@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Trash2 } from 'lucide-react'
+import { API_ROUTES } from '@/constants'
 
 interface DeleteSessionButtonProps {
   sessionId: string
@@ -18,8 +19,11 @@ export function DeleteSessionButton({ sessionId, adminKey }: DeleteSessionButton
 
     setDeleting(true)
     try {
-      const res = await fetch(`/api/admin/sessions/${sessionId}?key=${adminKey}`, {
+      const res = await fetch(API_ROUTES.adminSession(sessionId), {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${adminKey}`,
+        },
       })
       if (res.ok) {
         router.refresh()

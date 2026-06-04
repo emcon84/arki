@@ -2,9 +2,10 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { Message } from '@/types'
 import { CLAUDE_MODELS } from '@/constants'
 import { parseMessageContent } from '@/lib/parseMessageContent'
+import { env } from '@/lib/env'
 
 const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: env.anthropicApiKey,
 })
 
 const INTERVIEW_SYSTEM_PROMPT = `You are Arki, a senior software architect with 15+ years of experience.
